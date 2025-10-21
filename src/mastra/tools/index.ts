@@ -521,6 +521,7 @@ async function getPortfolioStats(period: string): Promise<any> {
   };
 }
 
+// ==================== PRICE API INTEGRATION ====================
 // Fetch real-time prices from CoinGecko API (free, no auth required)
 async function fetchRealTimePrices(tokens: string[]): Promise<Record<string, number>> {
   const prices: Record<string, number> = {};
