@@ -137,6 +137,7 @@ export const detectArbitrageTool = createTool({
 });
 
 // ==================== TRADE EXECUTION TOOL ====================
+// Safe trade execution with risk management and slippage protection
 
 export const executeTradeTool = createTool({
   id: 'execute-trade',
