@@ -48,7 +48,8 @@ const ollama = createOllama({
 });
 
 const getModel = () => {
-  return ollama(process.env.NOS_MODEL_NAME_AT_ENDPOINT || process.env.MODEL_NAME_AT_ENDPOINT || "qwen3:8b");
+  const modelName = process.env.NOS_MODEL_NAME_AT_ENDPOINT || process.env.MODEL_NAME_AT_ENDPOINT || "qwen3:8b";
+  return ollama(modelName);
   // Uncomment for OpenAI: return openai("gpt-4o");
 };
 
