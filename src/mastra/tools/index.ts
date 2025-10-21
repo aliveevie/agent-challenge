@@ -582,7 +582,7 @@ async function fetchRealTimePrices(tokens: string[]): Promise<Record<string, num
       }
     }
     
-    console.log('✅ Real-time prices fetched:', prices);
+    console.log('✅ Real-time prices fetched successfully:', Object.keys(prices).length, 'tokens');
     return prices;
     
   } catch (error) {
