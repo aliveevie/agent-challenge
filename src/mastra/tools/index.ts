@@ -206,6 +206,7 @@ export const monitorMarketTool = createTool({
 });
 
 // ==================== OPPORTUNITY BROADCASTER TOOL ====================
+// Community sharing system for profitable opportunities
 
 export const broadcastOpportunityTool = createTool({
   id: 'broadcast-opportunity',
