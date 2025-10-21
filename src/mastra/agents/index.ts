@@ -53,6 +53,7 @@ const getModel = () => {
 };
 
 // ==================== PRICE MONITOR AGENT ====================
+// Specialized agent for real-time price tracking and market monitoring
 
 export const priceMonitorAgent = new Agent({
   name: "Price Monitor Agent",
