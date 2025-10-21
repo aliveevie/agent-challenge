@@ -16,6 +16,7 @@ import { z } from "zod";
 import { Memory } from "@mastra/memory";
 
 // ==================== AGENT STATES ====================
+// State management schemas for arbitrage agents
 
 export const ArbitrageState = z.object({
   monitoredTokens: z.array(z.string()).default(['ETH', 'BTC', 'SOL', 'USDC', 'BNB']),
