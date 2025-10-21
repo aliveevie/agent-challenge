@@ -129,7 +129,7 @@ export const server = new MCPServer({
     tradeExecutorAgent,       // ask_tradeExecutorAgent
     masterArbitrageAgent,     // ask_masterArbitrageAgent
   },
-  prompts, // Dynamic prompts for context-aware assistance
+  prompts, // Dynamic prompts system - 9 templates for context-aware assistance
   // workflows: {
   //   arbitrageWorkflow, // Future: run_arbitrageWorkflow
   // }
