@@ -177,6 +177,7 @@ export const executeTradeTool = createTool({
 });
 
 // ==================== MARKET MONITOR TOOL ====================
+// Comprehensive market analysis with trend detection
 
 export const monitorMarketTool = createTool({
   id: 'monitor-market',
