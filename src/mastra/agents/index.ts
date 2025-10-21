@@ -178,6 +178,7 @@ Always analyze with precision and speed - in arbitrage, timing is everything!`,
 });
 
 // ==================== TRADE EXECUTOR AGENT ====================
+// Precision-focused agent for safe trade execution and risk management
 
 export const tradeExecutorAgent = new Agent({
   name: "Trade Executor Agent",
