@@ -512,7 +512,11 @@ This project demonstrates:
 ✅ Real-time synchronization  
 ✅ Comprehensive documentation  
 
-**Built to win. Built for real-world impact. Built with 💚 by the Arbitrage Bot Pro team.**
+**Built to win. Built for real-world impact. Built with 💚 for Nosana Builders Challenge 3.**
+
+---
+
+*Ready to revolutionize crypto arbitrage? Let's go! 🚀*
 
 ---
 
