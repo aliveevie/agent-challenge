@@ -226,6 +226,7 @@ export const broadcastOpportunityTool = createTool({
 });
 
 // ==================== PORTFOLIO TRACKER TOOL ====================
+// Performance analytics and trading statistics
 
 export const trackPortfolioTool = createTool({
   id: 'track-portfolio',
