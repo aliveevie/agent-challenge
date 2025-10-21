@@ -1,4 +1,5 @@
 "use client";
+// Arbitrage Bot Pro - Main Dashboard Component
 
 import { useCoAgent, useCopilotAction } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
