@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nosana Mastra Agent Kit",
-  description: "An example of using CopilotKit with Mastra agents.",
+  title: "Arbitrage Bot Pro - AI-Powered DEX & CEX Arbitrage",
+  description: "Real-time cryptocurrency arbitrage bot that monitors DEXs and CEXs to identify profitable trading opportunities. Built for Nosana Builders Challenge 3.",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <CopilotKit runtimeUrl="/api/copilotkit" agent="weatherAgent">
+        <CopilotKit runtimeUrl="/api/copilotkit" agent="masterArbitrageAgent">
           {children}
         </CopilotKit>
       </body>

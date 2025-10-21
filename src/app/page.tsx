@@ -2,255 +2,572 @@
 
 import { useCoAgent, useCopilotAction } from "@copilotkit/react-core";
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
-import { useState } from "react";
-import { AgentState as AgentStateSchema } from "@/mastra/agents";
+import { useState, useEffect } from "react";
+import { ArbitrageState as ArbitrageStateSchema } from "@/mastra/agents";
 import { z } from "zod";
-import { WeatherToolResult } from "@/mastra/tools";
+import { ArbitrageOpportunity, PriceData } from "@/mastra/tools";
 
-type AgentState = z.infer<typeof AgentStateSchema>;
+type ArbitrageState = z.infer<typeof ArbitrageStateSchema>;
 
-export default function CopilotKitPage() {
-  const [themeColor, setThemeColor] = useState("#6366f1");
-
-  // 🪁 Frontend Actions: https://docs.copilotkit.ai/guides/frontend-actions
-  useCopilotAction({
-    name: "setThemeColor",
-    parameters: [{
-      name: "themeColor",
-      description: "The theme color to set. Make sure to pick nice colors.",
-      required: true,
-    }],
-    handler({ themeColor }) {
-      setThemeColor(themeColor);
-    },
-  });
+export default function ArbitrageBotPage() {
+  const [themeColor] = useState("#10b981"); // Emerald green for profit theme
 
   return (
     <main style={{ "--copilot-kit-primary-color": themeColor } as CopilotKitCSSProperties}>
-      <YourMainContent themeColor={themeColor} />
+      <ArbitrageDashboard themeColor={themeColor} />
       <CopilotSidebar
         clickOutsideToClose={false}
         defaultOpen={true}
         labels={{
-          title: "Popup Assistant",
-          initial: "👋 Hi, there! You're chatting with an agent. This agent comes with a few tools to get you started.\n\nFor example you can try:\n- **Frontend Tools**: \"Set the theme to orange\"\n- **Shared State**: \"Write a proverb about AI\"\n- **Generative UI**: \"Get the weather in SF\"\n\nAs you interact with the agent, you'll see the UI update in real-time to reflect the agent's **state**, **tool calls**, and **progress**."
+          title: "🚀 Arbitrage Bot Assistant",
+          initial: `🎯 **Welcome to Arbitrage Bot Pro!**
+
+I'm your AI-powered arbitrage assistant. I monitor DEXs and CEXs 24/7 to find profitable trading opportunities.
+
+**Quick Commands:**
+- 💰 "Find arbitrage opportunities for ETH and BTC"
+- 📊 "Monitor DEX prices for SOL"
+- 🔄 "Scan all exchanges for the best opportunities"
+- 💹 "Show my portfolio performance"
+- 🚀 "Execute trade simulation"
+- 📢 "Broadcast top opportunities"
+
+**What I Do:**
+✅ Real-time price monitoring across 8+ exchanges
+✅ Instant arbitrage opportunity detection
+✅ Risk-adjusted profit calculations
+✅ Automated trade execution (with safeguards)
+✅ Portfolio tracking & analytics
+✅ Community opportunity sharing
+
+**Try saying:**
+- "Start monitoring ETH, BTC, and SOL"
+- "What are the best arbitrage opportunities right now?"
+- "Show me the most profitable trades today"`
         }}
       />
     </main>
   );
 }
 
-function YourMainContent({ themeColor }: { themeColor: string }) {
-  // 🪁 Shared State: https://docs.copilotkit.ai/coagents/shared-state
-  const { state, setState } = useCoAgent<AgentState>({
-    name: "weatherAgent",
+function ArbitrageDashboard({ themeColor }: { themeColor: string }) {
+  // Shared State with Master Arbitrage Agent
+  const { state, setState } = useCoAgent<ArbitrageState>({
+    name: "masterArbitrageAgent",
     initialState: {
-      proverbs: [
-        "CopilotKit may be new, but its the best thing since sliced bread.",
-      ],
+      monitoredTokens: ['ETH', 'BTC', 'SOL', 'USDC', 'BNB'],
+      activeOpportunities: [],
+      totalProfitToday: 0,
+      tradesExecutedToday: 0,
+      isMonitoring: false,
+      lastUpdateTimestamp: Date.now(),
     },
-  })
+  });
 
-  //🪁 Generative UI: https://docs.copilotkit.ai/coagents/generative-ui
+  const [livePrices, setLivePrices] = useState<PriceData[]>([]);
+  const [opportunities, setOpportunities] = useState<ArbitrageOpportunity[]>([]);
+
+  // Simulate real-time updates every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (state.isMonitoring) {
+        setState({
+          ...state,
+          lastUpdateTimestamp: Date.now(),
+        });
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [state, setState]);
+
+  // Generative UI: DEX Price Fetch
   useCopilotAction({
-    name: "weatherTool",
-    description: "Get the weather for a given location.",
+    name: "fetchDexPricesTool",
+    description: "Fetches prices from DEXs",
     available: "frontend",
     parameters: [
-      { name: "location", type: "string", required: true },
+      { name: "tokens", type: "string[]", required: true },
     ],
     render: ({ args, result, status }) => {
-      return <WeatherCard
-        location={args.location}
+      if (status === "complete" && result) {
+        setTimeout(() => setLivePrices(prev => [...result, ...prev].slice(0, 20)), 0);
+      }
+      return <PriceUpdateCard
+        type="DEX"
+        tokens={args.tokens}
+        prices={result}
+        status={status}
         themeColor={themeColor}
+      />;
+    },
+  });
+
+  // Generative UI: CEX Price Fetch
+  useCopilotAction({
+    name: "fetchCexPricesTool",
+    description: "Fetches prices from CEXs",
+    available: "frontend",
+    parameters: [
+      { name: "tokens", type: "string[]", required: true },
+    ],
+    render: ({ args, result, status }) => {
+      if (status === "complete" && result) {
+        setTimeout(() => setLivePrices(prev => [...result, ...prev].slice(0, 20)), 0);
+      }
+      return <PriceUpdateCard
+        type="CEX"
+        tokens={args.tokens}
+        prices={result}
+        status={status}
+        themeColor={themeColor}
+      />;
+    },
+  });
+
+  // Generative UI: Arbitrage Detection
+  useCopilotAction({
+    name: "detectArbitrageTool",
+    description: "Detects arbitrage opportunities",
+    available: "frontend",
+    parameters: [
+      { name: "minProfitPercent", type: "number", required: false },
+    ],
+    render: ({ result, status }) => {
+      if (status === "complete" && result) {
+        setTimeout(() => {
+          setOpportunities(result.opportunities || []);
+          setState({
+            ...state,
+            activeOpportunities: result.opportunities || [],
+          });
+        }, 0);
+      }
+      return <ArbitrageDetectionCard
         result={result}
         status={status}
-      />
+        themeColor={themeColor}
+      />;
     },
   });
 
+  // Generative UI: Trade Execution
   useCopilotAction({
-    name: "updateWorkingMemory",
+    name: "executeTradeTool",
+    description: "Executes an arbitrage trade",
     available: "frontend",
-    render: ({ args }) => {
-      return <div style={{ backgroundColor: themeColor }} className="rounded-2xl max-w-md w-full text-white p-4">
-        <p>✨ Memory updated</p>
-        <details className="mt-2">
-          <summary className="cursor-pointer text-white">See updates</summary>
-          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} className="overflow-x-auto text-sm bg-white/20 p-4 rounded-lg mt-2">
-            {JSON.stringify(args, null, 2)}
-          </pre>
-        </details>
-      </div>
+    parameters: [
+      { name: "opportunity", type: "object", required: true },
+      { name: "amount", type: "number", required: true },
+      { name: "dryRun", type: "boolean", required: false },
+    ],
+    render: ({ args, result, status }) => {
+      return <TradeExecutionCard
+        opportunity={args.opportunity}
+        amount={args.amount}
+        result={result}
+        status={status}
+        themeColor={themeColor}
+      />;
+    },
+  });
+
+  // Generative UI: Portfolio Tracking
+  useCopilotAction({
+    name: "trackPortfolioTool",
+    description: "Shows portfolio statistics",
+    available: "frontend",
+    parameters: [],
+    render: ({ result, status }) => {
+      return <PortfolioCard
+        stats={result}
+        status={status}
+        themeColor={themeColor}
+      />;
+    },
+  });
+
+  // Generative UI: Market Monitor
+  useCopilotAction({
+    name: "monitorMarketTool",
+    description: "Monitors market trends",
+    available: "frontend",
+    parameters: [
+      { name: "tokens", type: "string[]", required: true },
+    ],
+    render: ({ result, status }) => {
+      return <MarketMonitorCard
+        data={result}
+        status={status}
+        themeColor={themeColor}
+      />;
     },
   });
 
   return (
-    <div
-      style={{ backgroundColor: themeColor }}
-      className="h-screen w-screen flex justify-center items-center flex-col transition-colors duration-300"
-    >
-      <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-2xl w-full">
-        <h1 className="text-4xl font-bold text-white mb-2 text-center">Proverbs</h1>
-        <p className="text-gray-200 text-center italic mb-6">This is a demonstrative page, but it could be anything you want! 🪁</p>
-        <hr className="border-white/20 my-6" />
-        <div className="flex flex-col gap-3">
-          {state.proverbs?.map((proverb, index) => (
-            <div
-              key={index}
-              className="bg-white/15 p-4 rounded-xl text-white relative group hover:bg-white/20 transition-all"
-            >
-              <p className="pr-8">{proverb}</p>
-              <button
-                onClick={() => setState({
-                  ...state,
-                  proverbs: state.proverbs?.filter((_, i) => i !== index),
-                })}
-                className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity 
-                  bg-red-500 hover:bg-red-600 text-white rounded-full h-6 w-6 flex items-center justify-center"
-              >
-                ✕
-              </button>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      {/* Header */}
+      <div className="border-b border-gray-700 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
+                <span className="text-xl">💰</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                  Arbitrage Bot Pro
+                </h1>
+                <p className="text-xs text-gray-400">Real-time DEX & CEX Arbitrage</p>
+              </div>
             </div>
-          ))}
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-2xl font-bold text-emerald-400">
+                  ${state.totalProfitToday.toLocaleString()}
+                </div>
+                <div className="text-xs text-gray-400">Profit Today</div>
+              </div>
+              <div className="w-12 h-12 rounded-full border-2 border-emerald-500 flex items-center justify-center relative">
+                {state.isMonitoring && (
+                  <div className="absolute inset-0 rounded-full border-2 border-emerald-500 animate-ping"></div>
+                )}
+                <span className="text-xl">{state.isMonitoring ? '🟢' : '⚪'}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        {state.proverbs?.length === 0 && <p className="text-center text-white/80 italic my-8">
-          No proverbs yet. Ask the assistant to add some!
-        </p>}
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Left Column: Live Opportunities */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            {/* Stats Overview */}
+            <div className="grid grid-cols-3 gap-4">
+              <StatCard
+                icon="📊"
+                label="Monitored Tokens"
+                value={state.monitoredTokens.length}
+                color="from-blue-500 to-cyan-500"
+              />
+              <StatCard
+                icon="🎯"
+                label="Active Opportunities"
+                value={state.activeOpportunities.length}
+                color="from-emerald-500 to-teal-500"
+              />
+              <StatCard
+                icon="🔄"
+                label="Trades Today"
+                value={state.tradesExecutedToday}
+                color="from-purple-500 to-pink-500"
+              />
+            </div>
+
+            {/* Live Opportunities Feed */}
+            <div className="bg-gray-800/50 backdrop-blur-md rounded-2xl p-6 border border-gray-700">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <span className="text-2xl">🎯</span>
+                  Live Arbitrage Opportunities
+                </h2>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                  Real-time
+                </div>
+              </div>
+              
+              {opportunities.length > 0 ? (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {opportunities.slice(0, 5).map((opp, idx) => (
+                    <OpportunityCard key={idx} opportunity={opp} rank={idx + 1} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  <span className="text-4xl mb-2 block">🔍</span>
+                  <p>Scanning for opportunities...</p>
+                  <p className="text-sm mt-1">Ask the agent to detect arbitrage opportunities!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Monitored Tokens */}
+            <div className="bg-gray-800/50 backdrop-blur-md rounded-2xl p-6 border border-gray-700">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <span className="text-2xl">🪙</span>
+                Monitored Tokens
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {state.monitoredTokens.map((token, idx) => (
+                  <div
+                    key={idx}
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 
+                    border border-gray-500 flex items-center gap-2 hover:scale-105 transition-transform"
+                  >
+                    <span className="font-bold">{token}</span>
+                    <span className="text-xs text-gray-400">Live</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Live Prices Feed */}
+          <div className="space-y-6">
+            <div className="bg-gray-800/50 backdrop-blur-md rounded-2xl p-6 border border-gray-700">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <span className="text-2xl">💹</span>
+                Live Price Feed
+              </h2>
+              <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                {livePrices.length > 0 ? (
+                  livePrices.map((price, idx) => (
+                    <PriceTicker key={idx} price={price} />
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <span className="text-3xl block mb-2">📡</span>
+                    <p className="text-sm">Waiting for price data...</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-// Weather card component where the location and themeColor are based on what the agent
-// sets via tool calls.
-function WeatherCard({
-  location,
-  themeColor,
-  result,
-  status
-}: {
-  location?: string,
-  themeColor: string,
-  result: WeatherToolResult,
-  status: "inProgress" | "executing" | "complete"
-}) {
+// Component: Stat Card
+function StatCard({ icon, label, value, color }: { icon: string; label: string; value: number; color: string }) {
+    return (
+    <div className={`bg-gradient-to-br ${color} p-4 rounded-xl shadow-lg`}>
+      <div className="text-3xl mb-2">{icon}</div>
+      <div className="text-3xl font-bold text-white">{value}</div>
+      <div className="text-sm text-white/80">{label}</div>
+        </div>
+  );
+}
+
+// Component: Opportunity Card
+function OpportunityCard({ opportunity, rank }: { opportunity: ArbitrageOpportunity; rank: number }) {
+  const confidenceColors = {
+    high: 'from-emerald-500 to-green-500',
+    medium: 'from-yellow-500 to-orange-500',
+    low: 'from-gray-500 to-gray-600',
+  };
+
+  return (
+    <div className="bg-gray-700/50 rounded-xl p-4 border border-gray-600 hover:border-emerald-500 transition-all hover:scale-[1.02]">
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-bold text-gray-400">#{rank}</span>
+          <div>
+            <div className="font-bold text-lg">{opportunity.symbol}</div>
+            <div className={`text-xs px-2 py-0.5 rounded-full bg-gradient-to-r ${confidenceColors[opportunity.confidence]} text-white inline-block`}>
+              {opportunity.confidence.toUpperCase()}
+            </div>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-bold text-emerald-400">+{opportunity.profitPercent}%</div>
+          <div className="text-xs text-gray-400">${opportunity.estimatedProfit.toLocaleString()}</div>
+        </div>
+            </div>
+      <div className="grid grid-cols-2 gap-2 text-sm mt-3 pt-3 border-t border-gray-600">
+            <div>
+          <div className="text-gray-400 text-xs">Buy at</div>
+          <div className="font-semibold text-blue-400">{opportunity.buyExchange}</div>
+          <div className="text-xs text-gray-500">${opportunity.buyPrice}</div>
+            </div>
+            <div>
+          <div className="text-gray-400 text-xs">Sell at</div>
+          <div className="font-semibold text-emerald-400">{opportunity.sellExchange}</div>
+          <div className="text-xs text-gray-500">${opportunity.sellPrice}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Component: Price Ticker
+function PriceTicker({ price }: { price: PriceData }) {
+  const typeColor = price.type === 'DEX' ? 'text-purple-400' : 'text-blue-400';
+  
+  return (
+    <div className="bg-gray-700/30 rounded-lg p-3 flex items-center justify-between hover:bg-gray-700/50 transition-colors">
+      <div className="flex items-center gap-2">
+        <span className={`text-xs font-bold ${typeColor}`}>{price.type}</span>
+        <span className="font-bold">{price.symbol}</span>
+        <span className="text-xs text-gray-400">{price.exchange}</span>
+      </div>
+      <div className="text-right">
+        <div className="font-bold">${price.price.toLocaleString()}</div>
+        <div className="text-xs text-gray-400">{new Date(price.timestamp).toLocaleTimeString()}</div>
+      </div>
+    </div>
+  );
+}
+
+// Component: Price Update Card (Generative UI)
+function PriceUpdateCard({ type, tokens, prices, status, themeColor }: any) {
   if (status !== "complete") {
     return (
-      <div
-        className="rounded-xl shadow-xl mt-6 mb-4 max-w-md w-full"
-        style={{ backgroundColor: themeColor }}
-      >
-        <div className="bg-white/20 p-4 w-full">
-          <p className="text-white animate-pulse">Loading weather for {location}...</p>
+      <div className="rounded-xl bg-gray-800 border border-gray-700 p-4 max-w-md">
+        <div className="flex items-center gap-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-2 border-emerald-500 border-t-transparent"></div>
+          <span>Fetching {type} prices for {tokens?.join(', ')}...</span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div
-      style={{ backgroundColor: themeColor }}
-      className="rounded-xl shadow-xl mt-6 mb-4 max-w-md w-full"
-    >
-      <div className="bg-white/20 p-4 w-full">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-bold text-white capitalize">{location}</h3>
-            <p className="text-white">Current Weather</p>
-          </div>
-          <WeatherIcon conditions={result?.conditions} />
-        </div>
+    <div className="rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500 p-4 max-w-md">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xl">✅</span>
+        <span className="font-bold">{type} Prices Updated</span>
+      </div>
+      <div className="text-sm text-gray-300">
+        Fetched {prices?.length || 0} prices from {type}s
+      </div>
+    </div>
+  );
+}
 
-        <div className="mt-4 flex items-end justify-between">
-          <div className="text-3xl font-bold text-white">
-            <span className="">
-              {result?.temperature}° C
-            </span>
-            <span className="text-sm text-white/50">
-              {" / "}
-              {((result?.temperature * 9) / 5 + 32).toFixed(1)}° F
-            </span>
-          </div>
-          <div className="text-sm text-white">{result?.conditions}</div>
+// Component: Arbitrage Detection Card (Generative UI)
+function ArbitrageDetectionCard({ result, status, themeColor }: any) {
+  if (status !== "complete") {
+    return (
+      <div className="rounded-xl bg-gray-800 border border-gray-700 p-4">
+        <div className="flex items-center gap-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-500 border-t-transparent"></div>
+          <span>🔍 Scanning for arbitrage opportunities...</span>
         </div>
+      </div>
+    );
+  }
 
-        <div className="mt-4 pt-4 border-t border-white">
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div>
-              <p className="text-white text-xs">Humidity</p>
-              <p className="text-white font-medium">{result?.humidity}%</p>
-            </div>
-            <div>
-              <p className="text-white text-xs">Wind</p>
-              <p className="text-white font-medium">{result?.windSpeed} mph</p>
-            </div>
-            <div>
-              <p className="text-white text-xs">Feels Like</p>
-              <p className="text-white font-medium">{result?.feelsLike}°</p>
-            </div>
+  const topOpp = result?.topOpportunity;
+
+  return (
+    <div className="rounded-xl bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500 p-4">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xl">🎯</span>
+        <span className="font-bold">Found {result?.totalOpportunities || 0} Opportunities!</span>
+      </div>
+      {topOpp && (
+        <div className="mt-3 pt-3 border-t border-yellow-500/30">
+          <div className="text-sm">
+            <span className="text-gray-300">Top: </span>
+            <span className="font-bold text-emerald-400">{topOpp.symbol} +{topOpp.profitPercent}%</span>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Component: Trade Execution Card (Generative UI)
+function TradeExecutionCard({ opportunity, amount, result, status, themeColor }: any) {
+  if (status !== "complete") {
+    return (
+      <div className="rounded-xl bg-gray-800 border border-gray-700 p-4">
+        <div className="flex items-center gap-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+          <span>🔄 Executing trade...</span>
+        </div>
+      </div>
+    );
+  }
+
+  const isSuccess = result?.success;
+
+  return (
+    <div className={`rounded-xl ${isSuccess ? 'bg-gradient-to-r from-emerald-500/20 to-green-500/20 border-emerald-500' : 'bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-500'} border p-4`}>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xl">{isSuccess ? '✅' : '❌'}</span>
+        <span className="font-bold">Trade {isSuccess ? 'Successful' : 'Failed'}</span>
+      </div>
+      <div className="text-sm space-y-1">
+        <div>Trade ID: <span className="text-gray-400">{result?.tradeId}</span></div>
+        {isSuccess && (
+          <div className="text-emerald-400 font-bold">Profit: ${result?.actualProfit}</div>
+        )}
+        <div className="text-xs text-gray-400">{result?.message}</div>
+      </div>
+    </div>
+  );
+}
+
+// Component: Portfolio Card (Generative UI)
+function PortfolioCard({ stats, status, themeColor }: any) {
+  if (status !== "complete") {
+    return (
+      <div className="rounded-xl bg-gray-800 border border-gray-700 p-4">
+        <div className="animate-pulse">Loading portfolio...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500 p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-xl">💼</span>
+        <span className="font-bold">Portfolio Performance</span>
+      </div>
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <div className="text-gray-400 text-xs">Total Trades</div>
+          <div className="text-xl font-bold">{stats?.totalTrades}</div>
+        </div>
+        <div>
+          <div className="text-gray-400 text-xs">Success Rate</div>
+          <div className="text-xl font-bold text-emerald-400">{stats?.successRate}%</div>
+        </div>
+        <div>
+          <div className="text-gray-400 text-xs">Total Profit</div>
+          <div className="text-xl font-bold text-emerald-400">${stats?.totalProfit}</div>
+        </div>
+        <div>
+          <div className="text-gray-400 text-xs">Avg Profit</div>
+          <div className="text-xl font-bold">${stats?.averageProfit}</div>
         </div>
       </div>
     </div>
   );
 }
 
-function WeatherIcon({ conditions }: { conditions: string }) {
-  if (!conditions) return null;
-
-  if (
-    conditions.toLowerCase().includes("clear") ||
-    conditions.toLowerCase().includes("sunny")
-  ) {
-    return <SunIcon />;
+// Component: Market Monitor Card (Generative UI)
+function MarketMonitorCard({ data, status, themeColor }: any) {
+  if (status !== "complete") {
+    return (
+      <div className="rounded-xl bg-gray-800 border border-gray-700 p-4">
+        <div className="flex items-center gap-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-2 border-cyan-500 border-t-transparent"></div>
+          <span>📊 Monitoring market...</span>
+        </div>
+      </div>
+    );
   }
 
-  if (
-    conditions.toLowerCase().includes("rain") ||
-    conditions.toLowerCase().includes("drizzle") ||
-    conditions.toLowerCase().includes("snow") ||
-    conditions.toLowerCase().includes("thunderstorm")
-  ) {
-    return <RainIcon />;
-  }
-
-  if (
-    conditions.toLowerCase().includes("fog") ||
-    conditions.toLowerCase().includes("cloud") ||
-    conditions.toLowerCase().includes("overcast")
-  ) {
-    return <CloudIcon />;
-  }
-
-  return <CloudIcon />;
-}
-
-// Simple sun icon for the weather card
-function SunIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-yellow-200">
-      <circle cx="12" cy="12" r="5" />
-      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" strokeWidth="2" stroke="currentColor" />
-    </svg>
-  );
-}
-
-function RainIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-blue-200">
-      {/* Cloud */}
-      <path d="M7 15a4 4 0 0 1 0-8 5 5 0 0 1 10 0 4 4 0 0 1 0 8H7z" fill="currentColor" opacity="0.8" />
-      {/* Rain drops */}
-      <path d="M8 18l2 4M12 18l2 4M16 18l2 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-    </svg>
-  );
-}
-
-function CloudIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-gray-200">
-      <path d="M7 15a4 4 0 0 1 0-8 5 5 0 0 1 10 0 4 4 0 0 1 0 8H7z" fill="currentColor" />
-    </svg>
+    <div className="rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500 p-4">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xl">📊</span>
+        <span className="font-bold">Market Analysis Complete</span>
+      </div>
+      <div className="text-sm space-y-1">
+        <div>Prices Checked: <span className="font-bold">{data?.summary?.totalPricesChecked}</span></div>
+        <div>Most Active: <span className="font-bold text-blue-400">{data?.summary?.mostActiveExchange}</span></div>
+        <div>Highest Volatility: <span className="font-bold text-yellow-400">{data?.summary?.highestVolatility}</span></div>
+      </div>
+    </div>
   );
 }
