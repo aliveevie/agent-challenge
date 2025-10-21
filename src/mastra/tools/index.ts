@@ -77,6 +77,7 @@ export const fetchDexPricesTool = createTool({
 });
 
 // ==================== CEX PRICE FETCHING TOOL ====================
+// Fetches prices from centralized exchanges
 
 export const fetchCexPricesTool = createTool({
   id: 'fetch-cex-prices',
