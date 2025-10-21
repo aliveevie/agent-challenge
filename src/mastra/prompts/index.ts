@@ -5,6 +5,8 @@ import { z } from 'zod';
  * 
  * These prompts provide context-aware guidance to agents based on market conditions,
  * user preferences, and system state.
+ * 
+ * @module prompts
  */
 
 // ==================== MARKET CONDITION PROMPTS ====================
