@@ -258,6 +258,7 @@ Regularly report:
 });
 
 // ==================== MASTER ARBITRAGE ORCHESTRATOR ====================
+// Central intelligence coordinating all arbitrage operations
 
 export const masterArbitrageAgent = new Agent({
   name: "Master Arbitrage Orchestrator",
