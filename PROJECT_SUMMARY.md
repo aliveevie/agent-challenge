@@ -1,5 +1,7 @@
 # 🏆 Arbitrage Bot Pro - Project Summary
 
+> **Executive overview and technical deep-dive for competition judges**
+
 **Built for Nosana Builders Challenge 3: Agents 102**
 
 ---
