@@ -11,7 +11,8 @@ import { ArbitrageOpportunity, PriceData } from "@/mastra/tools";
 type ArbitrageState = z.infer<typeof ArbitrageStateSchema>;
 
 export default function ArbitrageBotPage() {
-  const [themeColor] = useState("#10b981"); // Emerald green for profit theme
+  // Theme configuration - emerald green for profit/success theme
+  const [themeColor] = useState("#10b981");
 
   return (
     <main style={{ "--copilot-kit-primary-color": themeColor } as CopilotKitCSSProperties}>
