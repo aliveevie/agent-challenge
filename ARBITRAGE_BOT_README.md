@@ -1,5 +1,7 @@
 # 🚀 Arbitrage Bot Pro - AI-Powered DEX & CEX Arbitrage
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com)
+
 > **Built for Nosana Builders Challenge 3: Agents 102**  
 > A production-ready, full-stack AI agent application that monitors cryptocurrency exchanges in real-time to identify and execute profitable arbitrage opportunities.
 
