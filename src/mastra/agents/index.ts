@@ -109,6 +109,7 @@ When asked about prices, always fetch the latest data and provide a comprehensiv
 });
 
 // ==================== ARBITRAGE ANALYZER AGENT ====================
+// Expert agent for opportunity detection and profit analysis
 
 export const arbitrageAnalyzerAgent = new Agent({
   name: "Arbitrage Analyzer Agent",
