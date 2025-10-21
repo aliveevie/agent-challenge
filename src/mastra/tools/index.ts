@@ -100,6 +100,7 @@ export const fetchCexPricesTool = createTool({
 });
 
 // ==================== ARBITRAGE DETECTION TOOL ====================
+// AI-powered opportunity detection with confidence scoring
 
 export const detectArbitrageTool = createTool({
   id: 'detect-arbitrage',
