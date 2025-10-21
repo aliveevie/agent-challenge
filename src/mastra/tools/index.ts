@@ -2,6 +2,7 @@ import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
 
 // ==================== TYPES & SCHEMAS ====================
+// Core types for arbitrage bot operations
 
 export interface PriceData {
   exchange: string;
