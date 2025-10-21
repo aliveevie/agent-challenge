@@ -1,5 +1,7 @@
 # ⚡ Quick Start - Arbitrage Bot Pro
 
+> **Get running in 5 minutes - Perfect for judges and reviewers**
+
 **Get up and running in 5 minutes!**
 
 ---
