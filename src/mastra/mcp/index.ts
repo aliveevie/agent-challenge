@@ -1,3 +1,4 @@
+// MCP Server Configuration for Arbitrage Bot Pro
 import { MCPServer } from "@mastra/mcp"
 import { 
   fetchDexPricesTool, 
