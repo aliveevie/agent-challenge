@@ -51,7 +51,9 @@ const ArbitrageOpportunitySchema = z.object({
 // ==================== GLOBAL STATE ====================
 
 // In-memory cache for price data (in production, use Redis or similar)
+// Global cache for price data (thread-safe in Node.js single-threaded context)
 const priceCache = new Map<string, PriceData>();
+// Historical record of opportunities for analysis
 const opportunityHistory: ArbitrageOpportunity[] = [];
 
 // ==================== DEX PRICE FETCHING TOOL ====================
