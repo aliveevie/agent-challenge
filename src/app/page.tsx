@@ -345,6 +345,7 @@ function ArbitrageDashboard({ themeColor }: { themeColor: string }) {
   );
 }
 
+// ==================== UI COMPONENTS ====================
 // Component: Stat Card
 function StatCard({ icon, label, value, color }: { icon: string; label: string; value: number; color: string }) {
     return (
