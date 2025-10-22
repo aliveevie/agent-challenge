@@ -9,7 +9,8 @@ import {
   executeTradeTool, 
   monitorMarketTool, 
   broadcastOpportunityTool, 
-  trackPortfolioTool 
+  trackPortfolioTool,
+  startVirtualTradingTool 
 } from "@/mastra/tools";
 import { LibSQLStore } from "@mastra/libsql";
 import { z } from "zod";
