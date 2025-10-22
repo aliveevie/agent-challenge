@@ -30,6 +30,10 @@ RUN --mount=type=cache,target=/pnpm/store \
 
 COPY . .
 
+# Set production environment variables for build
+ENV OLLAMA_API_URL=https://3yt39qx97wc9hqwwmylrphi4jsxrngjzxnbw.node.k8s.prd.nos.ci/api
+ENV MODEL_NAME_AT_ENDPOINT=qwen3:8b
+
 RUN pnpm build
 
 FROM node:lts AS runtime
@@ -42,7 +46,13 @@ WORKDIR /app
 COPY --from=build --chown=appuser:appgroup /app ./
 
 ENV NODE_ENV=production \
-  NODE_OPTIONS="--enable-source-maps"
+  NODE_OPTIONS="--enable-source-maps" \
+  OLLAMA_API_URL=https://3yt39qx97wc9hqwwmylrphi4jsxrngjzxnbw.node.k8s.prd.nos.ci/api \
+  MODEL_NAME_AT_ENDPOINT=qwen3:8b \
+  DISABLE_TELEMETRY=true \
+  POSTHOG_DISABLED=true \
+  MASTRA_TELEMETRY_DISABLED=true \
+  DO_NOT_TRACK=1
 
 USER appuser
 
