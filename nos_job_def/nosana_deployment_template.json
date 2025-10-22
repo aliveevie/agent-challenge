@@ -11,9 +11,9 @@
         "image": "aliveevie/arbitrage-bot-pro:latest",
         "expose": 3000,
         "env": {
-          "OLLAMA_API_URL": "http://%%ops.ollama.host%%:11434/api",
+          "OLLAMA_API_URL": "https://3yt39qx97wc9hqwwmylrphi4jsxrngjzxnjakkybnxbw.node.k8s.prd.nos.ci/api",
           "MODEL_NAME_AT_ENDPOINT": "qwen3:8b",
-          "NODE_ENV": "production",
+          "NODE_ENV": "production", 
           "DISABLE_TELEMETRY": "true",
           "MASTRA_TELEMETRY_DISABLED": "true"
         }

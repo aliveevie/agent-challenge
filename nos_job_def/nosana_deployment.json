@@ -1,0 +1,31 @@
+{
+  "ops": [
+    {
+      "id": "arbitrage-bot-pro",
+      "args": {
+        "image": "docker.io/aliveevie/arbitrage-bot-pro:latest",
+        "expose": 3000,
+        "gpu": false,
+        "env": {
+          "OLLAMA_API_URL": "https://3yt39qx97wc9hqwwmylrphi4jsxrngjzxnjakkybnxbw.node.k8s.prd.nos.ci/api",
+          "MODEL_NAME_AT_ENDPOINT": "qwen3:8b",
+          "NODE_ENV": "production",
+          "DISABLE_TELEMETRY": "true",
+          "MASTRA_TELEMETRY_DISABLED": "true",
+          "POSTHOG_DISABLED": "true",
+          "DO_NOT_TRACK": "1"
+        }
+      },
+      "type": "container/run"
+    }
+  ],
+  "meta": {
+    "trigger": "dashboard",
+    "system_requirements": {
+      "required_vram": 0
+    }
+  },
+  "type": "container",
+  "version": "0.1"
+}
+

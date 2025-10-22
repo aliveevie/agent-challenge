@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {
+      "id": "arbitrage-bot",
+      "args": {
+        "image": "docker.io/aliveevie/arbitrage-bot-pro:latest",
+        "expose": 3000,
+        "gpu": false
+      },
+      "type": "container/run"
+    }
+  ],
+  "meta": {
+    "trigger": "dashboard",
+    "system_requirements": {
+      "required_vram": 0
+    }
+  },
+  "type": "container",
+  "version": "0.1"
+}
+
