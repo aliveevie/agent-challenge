@@ -22,6 +22,7 @@ import {
   generateContextualPrompt,
   getTradingStrategyPrompt,
   getTokenAnalysisPrompt,
+  getVirtualTradingPrompt,
 } from "../prompts";
 
 // Dynamic Prompts for Context-Aware Assistance
@@ -74,6 +75,13 @@ const promptsList = [
       { name: "volatility", description: "Current market volatility percentage", required: false },
     ],
   },
+  {
+    name: "virtual_trading_guide",
+    description: "Complete guide for using the virtual trading account with $10,000 balance",
+    arguments: [
+      { name: "balance", description: "Current virtual balance (default: 10000)", required: false },
+    ],
+  },
 ];
 
 const prompts = {
@@ -94,6 +102,7 @@ const prompts = {
         strategy: (args?.strategy as 'conservative' | 'moderate' | 'aggressive') || 'moderate',
         isBeginne: false,
       }),
+      virtual_trading_guide: getVirtualTradingPrompt((args?.balance as number) || 10000),
     };
     
     return {
