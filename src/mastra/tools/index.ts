@@ -227,6 +227,40 @@ export const broadcastOpportunityTool = createTool({
   },
 });
 
+// ==================== VIRTUAL TRADING ACTIVATION TOOL ====================
+// Start virtual trading with $10,000 balance
+
+export const startVirtualTradingTool = createTool({
+  id: 'start-virtual-trading',
+  description: 'Activate virtual trading mode with a $10,000 starting balance. Allows users to practice arbitrage trading without real money. Perfect for learning and testing strategies.',
+  inputSchema: z.object({
+    initialBalance: z.number().default(10000).describe('Starting balance in USD (default: $10,000)'),
+    riskLevel: z.enum(['conservative', 'moderate', 'aggressive']).default('moderate').describe('Trading risk level'),
+  }),
+  outputSchema: z.object({
+    activated: z.boolean(),
+    balance: z.number(),
+    riskLevel: z.string(),
+    message: z.string(),
+    tips: z.array(z.string()),
+  }),
+  execute: async ({ context }) => {
+    return {
+      activated: true,
+      balance: context.initialBalance,
+      riskLevel: context.riskLevel,
+      message: `🎉 Virtual Trading Account Activated! You now have $${context.initialBalance.toLocaleString()} to trade with. This is a safe environment to practice arbitrage trading.`,
+      tips: [
+        '💡 Start with small trades to learn the system',
+        '📊 Monitor your profit/loss carefully',
+        '⚠️ Remember: Higher profits come with higher risks',
+        '🎯 Try different strategies to see what works',
+        '📈 Your balance updates in real-time with each trade',
+      ],
+    };
+  },
+});
+
 // ==================== PORTFOLIO TRACKER TOOL ====================
 // Performance analytics and trading statistics
 
@@ -508,7 +542,7 @@ async function getPortfolioStats(period: string): Promise<any> {
   const trades = Math.floor(Math.random() * 50) + 10;
   const successfulTrades = Math.floor(trades * 0.7); // 70% success rate
   const totalProfit = successfulTrades * (Math.random() * 200 + 50);
-  
+
   return {
     totalTrades: trades,
     successfulTrades,
