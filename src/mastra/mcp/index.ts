@@ -7,7 +7,8 @@ import {
   executeTradeTool, 
   monitorMarketTool, 
   broadcastOpportunityTool, 
-  trackPortfolioTool 
+  trackPortfolioTool,
+  startVirtualTradingTool 
 } from "../tools";
 import { 
   priceMonitorAgent, 
@@ -121,7 +122,8 @@ export const server = new MCPServer({
     executeTradeTool, 
     monitorMarketTool, 
     broadcastOpportunityTool, 
-    trackPortfolioTool 
+    trackPortfolioTool,
+    startVirtualTradingTool 
   },
   agents: { 
     priceMonitorAgent,        // ask_priceMonitorAgent
