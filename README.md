@@ -132,7 +132,7 @@ agent-challenge/
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR-USERNAME/agent-challenge
+git clone https://github.com/aliveevie/agent-challenge
 cd agent-challenge
 
 # Install dependencies
@@ -236,14 +236,14 @@ View:
 
 ```bash
 # Build the Docker image
-docker build -t yourusername/arbitrage-bot-pro:latest .
+docker build -t aliveevie/arbitrage-bot-pro:latest .
 
 # Test locally
-docker run -p 3000:3000 yourusername/arbitrage-bot-pro:latest
+docker run -p 3000:3000 aliveevie/arbitrage-bot-pro:latest
 
 # Push to Docker Hub
 docker login
-docker push yourusername/arbitrage-bot-pro:latest
+docker push aliveevie/arbitrage-bot-pro:latest
 ```
 
 ### Deploy to Nosana
@@ -254,7 +254,7 @@ docker push yourusername/arbitrage-bot-pro:latest
 3. Update `image` in `nos_job_def/nosana_mastra_job_definition.json`:
    ```json
    {
-     "image": "yourusername/arbitrage-bot-pro:latest"
+     "image": "aliveevie/arbitrage-bot-pro:latest"
    }
    ```
 4. Select GPU and deploy!
@@ -365,14 +365,14 @@ MIT License - see [LICENSE](./LICENSE) file for details
 
 ## 📞 Contact & Social
 
-**Developer**: [Your Name]
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Twitter: [@yourtwitter](https://twitter.com/yourtwitter)
-- Discord: your-discord-handle
+**Developer**: [iabdulkarim.eth]
+- GitHub: [@aliveevie](https://github.com/aliveevie)
+- Twitter: [@yourtwitter](https://twitter.com/iabdulkarim_eth)
+- Discord: ibrahimabdulkarim
 
 **Project Links**:
 - 🎥 [Video Demo](https://www.loom.com/share/6da4d9f9a98f4991995190058e70bb28?sid=4ce99471-df00-485b-a370-6dfa847edadd)
-- 🐳 [Docker Hub](https://hub.docker.com/r/yourusername/arbitrage-bot-pro)
+- 🐳 [Docker Hub](https://hub.docker.com/r/aliveevie/arbitrage-bot-pro)
 - 🚀 [Live Demo on Nosana](your-nosana-deployment-url)
 
 ## 🎉 Challenge Tags

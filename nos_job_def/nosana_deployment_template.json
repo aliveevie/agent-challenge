@@ -8,7 +8,7 @@
     {
       "id": "arbitrage-bot-pro",
       "args": {
-        "image": "YOUR_DOCKERHUB_USERNAME/arbitrage-bot-pro:latest",
+        "image": "aliveevie/arbitrage-bot-pro:latest",
         "expose": 3000,
         "env": {
           "OLLAMA_API_URL": "http://%%ops.ollama.host%%:11434/api",
