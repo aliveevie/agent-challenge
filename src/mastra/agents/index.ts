@@ -275,7 +275,8 @@ export const masterArbitrageAgent = new Agent({
     executeTradeTool, 
     monitorMarketTool, 
     broadcastOpportunityTool, 
-    trackPortfolioTool 
+    trackPortfolioTool,
+    startVirtualTradingTool 
   },
   model: getModel(),
   instructions: `You are the Master Arbitrage Orchestrator, the central intelligence coordinating all arbitrage operations.
