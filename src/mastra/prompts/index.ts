@@ -211,6 +211,74 @@ export const getBeginnerGuidancePrompt = () => {
   Need help? Just ask! I'm here to guide you. 🤝`;
 };
 
+// ==================== VIRTUAL TRADING PROMPTS ====================
+
+export const getVirtualTradingPrompt = (balance: number = 10000) => {
+  return `🎉 **VIRTUAL TRADING ACCOUNT GUIDE**
+  
+  **Your Practice Environment:**
+  You have $${balance.toLocaleString()} in virtual funds to practice arbitrage trading safely!
+  
+  **How It Works:**
+  - ✅ Real-time market data from actual exchanges
+  - ✅ Authentic arbitrage opportunity detection  
+  - ✅ Full trade execution simulation
+  - ✅ No real money at risk - completely safe!
+  - ✅ Track your performance and learn strategies
+  
+  **Getting Started:**
+  1. Your account is activated with $${balance.toLocaleString()}
+  2. Ask me to find arbitrage opportunities
+  3. Review the opportunities and their profit potential
+  4. Execute trades using your virtual balance
+  5. Watch your balance grow (or learn from losses!)
+  
+  **Risk Management Tips:**
+  - 💡 Start with small trades (5-10% of your balance)
+  - 💡 Don't risk more than 20% on a single trade
+  - 💡 Learn position sizing and risk per trade
+  - 💡 Experiment with different strategies safely
+  - 💡 Track what works and what doesn't
+  
+  **Key Concepts to Practice:**
+  - **Balance Management**: Keep enough reserves for multiple trades
+  - **Position Sizing**: How much to risk per opportunity
+  - **Profit Taking**: When to execute profitable trades
+  - **Loss Prevention**: Recognizing bad opportunities
+  - **Strategy Testing**: Try conservative, moderate, and aggressive approaches
+  
+  **Example Commands:**
+  - "Find arbitrage opportunities for ETH"
+  - "Execute a $500 trade on the best opportunity"
+  - "What's my current balance?"
+  - "Show my trading history"
+  - "What's my total profit/loss?"
+  
+  **Educational Focus:**
+  This virtual account is designed for learning, not gambling. Focus on:
+  - Understanding how arbitrage works
+  - Learning to evaluate opportunities
+  - Practicing risk management
+  - Building confidence before considering real trading
+  - Developing your own trading strategy
+  
+  **Important Reminders:**
+  ⚠️ Virtual results may not perfectly match live trading
+  ⚠️ Real trading involves real risks and real losses
+  ⚠️ Always do your own research before real trading
+  ⚠️ Practice until you're consistently profitable here
+  ⚠️ Never trade with money you can't afford to lose
+  
+  **Your Next Steps:**
+  1. Say "Find opportunities" to start scanning
+  2. Review the opportunities I present
+  3. Ask questions about anything you don't understand
+  4. Execute your first virtual trade
+  5. Learn from the results!
+  
+  Ready to start your arbitrage journey? Let's find some opportunities! 🚀`;
+};
+
 // ==================== ADVANCED STRATEGY PROMPTS ====================
 
 export const getAdvancedStrategyPrompt = () => {
