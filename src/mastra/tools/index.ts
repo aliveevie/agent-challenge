@@ -143,12 +143,13 @@ export const detectArbitrageTool = createTool({
 
 export const executeTradeTool = createTool({
   id: 'execute-trade',
-  description: 'Executes arbitrage trades automatically. Buys at the lower price exchange and sells at the higher price exchange. Includes slippage protection and risk management.',
+  description: 'Executes arbitrage trades automatically using virtual balance. Buys at the lower price exchange and sells at the higher price exchange. Includes slippage protection and risk management. Uses your $10,000 virtual trading account.',
   inputSchema: z.object({
     opportunity: ArbitrageOpportunitySchema.describe('The arbitrage opportunity to execute'),
-    amount: z.number().describe('Amount in USD to trade'),
+    amount: z.number().describe('Amount in USD to trade from your virtual balance'),
     maxSlippage: z.number().default(0.5).describe('Maximum acceptable slippage percentage (default: 0.5%)'),
-    dryRun: z.boolean().default(true).describe('If true, simulates the trade without executing (default: true for safety)'),
+    dryRun: z.boolean().default(false).describe('If true, simulates without affecting balance (default: false for virtual trading)'),
+    virtualBalance: z.number().default(10000).describe('Current virtual trading balance'),
   }),
   outputSchema: z.object({
     success: z.boolean(),
@@ -173,7 +174,8 @@ export const executeTradeTool = createTool({
       context.opportunity,
       context.amount,
       context.maxSlippage,
-      context.dryRun
+      context.dryRun,
+      context.virtualBalance
     );
   },
 });
@@ -414,8 +416,20 @@ async function executeTrade(
   opportunity: ArbitrageOpportunity,
   amount: number,
   maxSlippage: number,
-  dryRun: boolean
+  dryRun: boolean,
+  virtualBalance: number = 10000
 ): Promise<any> {
+  // Check if user has enough virtual balance
+  if (amount > virtualBalance) {
+    return {
+      success: false,
+      tradeId: `trade-insufficient-${Date.now()}`,
+      actualProfit: 0,
+      buyTransaction: { exchange: '', amount: 0, price: 0, fee: 0 },
+      sellTransaction: { exchange: '', amount: 0, price: 0, fee: 0 },
+      message: `❌ Insufficient virtual balance! You have $${virtualBalance.toLocaleString()} but tried to trade $${amount.toLocaleString()}. Try a smaller amount.`,
+    };
+  }
   const tradeId = `trade-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   
   // Simulate slippage
