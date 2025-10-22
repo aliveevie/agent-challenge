@@ -26,26 +26,29 @@ export default function ArbitrageBotPage() {
 
 I'm your AI-powered arbitrage assistant. I monitor DEXs and CEXs 24/7 to find profitable trading opportunities.
 
+**🎉 NEW: Virtual Trading Account!**
+Say "Start virtual trading" or "Activate my trading account" to get started with $10,000 virtual balance!
+
 **Quick Commands:**
+- 🎉 "Start virtual trading" - Activate your $10,000 account
 - 💰 "Find arbitrage opportunities for ETH and BTC"
 - 📊 "Monitor DEX prices for SOL"
-- 🔄 "Scan all exchanges for the best opportunities"
+- 🔄 "Execute a trade for $500" - Use your virtual balance
 - 💹 "Show my portfolio performance"
-- 🚀 "Execute trade simulation"
 - 📢 "Broadcast top opportunities"
 
 **What I Do:**
 ✅ Real-time price monitoring across 8+ exchanges
 ✅ Instant arbitrage opportunity detection
 ✅ Risk-adjusted profit calculations
-✅ Automated trade execution (with safeguards)
+✅ Virtual trading with $10,000 balance
+✅ Safe practice environment (no real money!)
 ✅ Portfolio tracking & analytics
-✅ Community opportunity sharing
 
 **Try saying:**
-- "Start monitoring ETH, BTC, and SOL"
-- "What are the best arbitrage opportunities right now?"
-- "Show me the most profitable trades today"`
+- "Start virtual trading"
+- "Find me the best opportunities and execute a $1000 trade"
+- "What's my current balance and profit?"`
         }}
       />
     </main>
