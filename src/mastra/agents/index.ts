@@ -25,6 +25,11 @@ export const ArbitrageState = z.object({
   tradesExecutedToday: z.number().default(0),
   isMonitoring: z.boolean().default(false),
   lastUpdateTimestamp: z.number().default(Date.now()),
+  // Virtual Trading Account
+  virtualBalance: z.number().default(10000), // Start with $10,000
+  isVirtualTradingActive: z.boolean().default(false),
+  virtualTrades: z.array(z.any()).default([]),
+  totalVirtualProfit: z.number().default(0),
 });
 
 export const PriceMonitorState = z.object({
