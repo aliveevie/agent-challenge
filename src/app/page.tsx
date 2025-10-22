@@ -63,6 +63,11 @@ function ArbitrageDashboard({ themeColor }: { themeColor: string }) {
       tradesExecutedToday: 0,
       isMonitoring: false,
       lastUpdateTimestamp: Date.now(),
+      // Virtual Trading Account
+      virtualBalance: 10000,
+      isVirtualTradingActive: false,
+      virtualTrades: [],
+      totalVirtualProfit: 0,
     },
   });
 
@@ -206,6 +211,27 @@ function ArbitrageDashboard({ themeColor }: { themeColor: string }) {
     },
   });
 
+  // Generative UI: Start Virtual Trading
+  useCopilotAction({
+    name: "startVirtualTradingTool",
+    description: "Activates virtual trading with $10,000 balance",
+    available: "frontend",
+    parameters: [
+      { name: "initialBalance", type: "number", required: false },
+      { name: "riskLevel", type: "string", required: false },
+    ],
+    render: ({ args, result, status }) => {
+      if (status === "complete" && result) {
+        setState({
+          ...state,
+          virtualBalance: result.balance,
+          isVirtualTradingActive: true,
+        });
+      }
+      return <VirtualTradingActivationCard result={result} status={status} />;
+    },
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       {/* Header */}
@@ -248,6 +274,29 @@ function ArbitrageDashboard({ themeColor }: { themeColor: string }) {
           {/* Left Column: Live Opportunities */}
           <div className="lg:col-span-2 space-y-6">
             
+            {/* Virtual Trading Account Banner */}
+            {state.isVirtualTradingActive && (
+              <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 border border-emerald-400">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm text-emerald-100 mb-1">💼 Virtual Trading Account</div>
+                    <div className="text-3xl font-bold text-white">
+                      ${state.virtualBalance.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-emerald-100 mt-1">
+                      Profit/Loss: <span className={state.totalVirtualProfit >= 0 ? 'text-white' : 'text-red-200'}>
+                        ${state.totalVirtualProfit.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-emerald-100">Virtual Trades</div>
+                    <div className="text-2xl font-bold text-white">{state.virtualTrades.length}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Stats Overview */}
             <div className="grid grid-cols-3 gap-4">
               <StatCard
@@ -571,6 +620,50 @@ function MarketMonitorCard({ data, status, themeColor }: any) {
         <div>Most Active: <span className="font-bold text-blue-400">{data?.summary?.mostActiveExchange}</span></div>
         <div>Highest Volatility: <span className="font-bold text-yellow-400">{data?.summary?.highestVolatility}</span></div>
       </div>
+    </div>
+  );
+}
+
+// Component: Virtual Trading Activation Card (Generative UI)
+function VirtualTradingActivationCard({ result, status }: any) {
+  if (status !== "complete") {
+    return (
+      <div className="rounded-xl bg-gray-800 border border-gray-700 p-4">
+        <div className="flex items-center gap-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-2 border-emerald-500 border-t-transparent"></div>
+          <span>🎉 Activating your virtual trading account...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500 p-5">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-2xl">🎉</span>
+        <span className="font-bold text-lg">Virtual Trading Activated!</span>
+      </div>
+      <div className="bg-gray-900/50 rounded-lg p-4 mb-3">
+        <div className="text-center mb-2">
+          <div className="text-sm text-gray-400">Starting Balance</div>
+          <div className="text-3xl font-bold text-emerald-400">${result?.balance?.toLocaleString()}</div>
+        </div>
+        <div className="text-xs text-center text-gray-400">
+          Risk Level: <span className="text-emerald-300 font-semibold">{result?.riskLevel}</span>
+        </div>
+      </div>
+      <div className="text-sm text-gray-300 mb-3">{result?.message}</div>
+      {result?.tips && result.tips.length > 0 && (
+        <div className="space-y-1">
+          <div className="text-xs font-semibold text-emerald-400 mb-2">💡 Trading Tips:</div>
+          {result.tips.map((tip: string, idx: number) => (
+            <div key={idx} className="text-xs text-gray-300 flex items-start gap-2">
+              <span className="text-emerald-500">•</span>
+              <span>{tip.replace(/^[💡📊⚠️🎯📈]\s*/, '')}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
