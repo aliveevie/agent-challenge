@@ -248,21 +248,51 @@ docker push aliveevie/arbitrage-bot-pro:latest
 
 ### Deploy to Nosana
 
-#### Option 1: Nosana Dashboard
+#### 🚀 Quick Deploy (Copy-Paste Ready!)
+
 1. Open [Nosana Dashboard](https://dashboard.nosana.com/deploy)
-2. Click `Expand` to edit job definition
-3. Update `image` in `nos_job_def/nosana_mastra_job_definition.json`:
+2. Copy the JSON below and paste it into the dashboard:
+
    ```json
    {
-     "image": "aliveevie/arbitrage-bot-pro:latest"
-   }
-   ```
-4. Select GPU and deploy!
+  "ops": [
+    {
+      "id": "arbitrage-bot-pro",
+      "args": {
+        "image": "docker.io/aliveevie/arbitrage-bot-pro:latest",
+        "expose": 3000,
+        "gpu": false,
+        "env": {
+          "OLLAMA_API_URL": "https://3yt39qx97wc9hqwwmylrphi4jsxrngjzxnjakkybnxbw.node.k8s.prd.nos.ci/api",
+          "MODEL_NAME_AT_ENDPOINT": "qwen3:8b",
+          "NODE_ENV": "production"
+        }
+      },
+      "type": "container/run"
+    }
+  ],
+  "meta": {
+    "trigger": "dashboard",
+    "system_requirements": {
+      "required_vram": 0
+    }
+  },
+  "type": "container",
+  "version": "0.1"
+}
+```
+
+3. Click **"Deploy"**
+4. Wait for your public URL! 🎉
+
+**Alternative**: Use pre-configured files:
+- `nos_job_def/nosana_deployment.json` - Full configuration
+- `nos_job_def/nosana_deployment_simple.json` - Minimal setup
 
 #### Option 2: Nosana CLI
 ```bash
 npm install -g @nosana/cli
-nosana job post --file ./nos_job_def/nosana_mastra_job_definition.json --market nvidia-3090 --timeout 30
+nosana job post --file ./nos_job_def/nosana_deployment.json
 ```
 
 ## 🎯 Challenge Compliance
@@ -373,7 +403,7 @@ MIT License - see [LICENSE](./LICENSE) file for details
 **Project Links**:
 - 🎥 [Video Demo](https://www.loom.com/share/6da4d9f9a98f4991995190058e70bb28?sid=4ce99471-df00-485b-a370-6dfa847edadd)
 - 🐳 [Docker Hub](https://hub.docker.com/r/aliveevie/arbitrage-bot-pro)
-- 🚀 [Live Demo on Nosana](your-nosana-deployment-url)
+- 🚀 [Live Demo on Nosana](https://2eyh1ytyechvu47gcvckqz5qxnyotkdwhxmrtr6pym51.node.k8s.prd.nos.ci/)
 
 ## 🎉 Challenge Tags
 
