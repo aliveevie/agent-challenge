@@ -9,6 +9,10 @@
 
 **Watch the full demo:** [Arbitrage Bot Pro in Action](https://www.loom.com/share/6da4d9f9a98f4991995190058e70bb28?sid=4ce99471-df00-485b-a370-6dfa847edadd)
 
+## 🌐 Live App on Nosana
+
+**Open the live deployment:** [Arbitrage Bot Pro (Nosana)](https://2eyh1ytyechvu47gcvckqz5qxnyotkdwhxmrtr6pym51.node.k8s.prd.nos.ci/)
+
 ## 🎯 What is Arbitrage Bot Pro?
 
 Arbitrage Bot Pro is an **intelligent multi-agent system** that monitors cryptocurrency prices across 8+ exchanges in real-time, detects profitable arbitrage opportunities, and enables users to practice trading with a **$10,000 virtual account** - all powered by AI agents and deployed on the Nosana decentralized network.
